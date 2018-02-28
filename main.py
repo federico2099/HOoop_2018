@@ -63,36 +63,47 @@ if __name__ == "__main__":
     """ simular una fila en una entidad bancaria"""
 
     import random
-
-    nclientes = 1000   
+    ncontador = 10000
+    range_cliente = 10000   
     range_atender = 100
     fg = FilaGeneral() # Como estas clases no tienen atributos
     fp = FilaPreferencial() # iniciales puedo dejar el parentesis vacio
-    for i in range(1,nclientes+1):
+    fila_pref = []
+    fila_gen = []
+    f = open('atencion_clientes.dat', 'w')
+    for i in range(1,ncontador+1):
         random_dni = random.randrange(30000000,33000000)
         random_atender = random.randrange(range_atender)
 # ¿Poner otro if para que el loop principal corra sobre un contador que podria ser t
 # y decidir si el cliente va a entrar o no e independientemente atienda?
-        c = cliente(random_dni)
-        random_number = random.randrange(10000)
-        if random_number%2 == 0:
-            if random_number%7 == 0:
+        random_number = random.randrange(range_cliente)
+        if random_number < int(range_cliente*0.75):
+            c = cliente(random_dni)
+            if random_number%2 == 0:
+                if random_number%7 == 0:
+                    c.modificarcategoria("Preferencial")
+                    fp.insertar(c)
+                else:
+                    fg.insertar(c)
+            else:
                 c.modificarcategoria("Preferencial")
                 fp.insertar(c)
-#                if random_atender < range_atender*0.7:
-#                    fp.atender()   
-            else:
-                fg.insertar(c)
-#                if random_atender < range_atender*0.4:
-#                    fg.atender()
+            if fg.enfila > 0 and random_atender < int(range_atender*0.35):
+                fg.atender()
+            if fp.enfila > 0 and random_atender < range_atender*0.6:
+                fp.atender()
+            fila_gen.append(fg.enfila)
+            fila_pref.append(fp.enfila)
+            datos = str(i)+'   '+str(fg.enfila)+'   '+str(fp.enfila)+'\n'
+            f.write(datos)
         else:
-            c.modificarcategoria("Preferencial")
-            fp.insertar(c)
-#            if random_atender < int(range_atender*0.7):
-#                fp.atender()
-        if fg.enfila > 0 and random_atender < int(range_atender*0.3):
-#             print("atiende general")
-            fg.atender()
-        if fp.enfila > 0 and random_atender < range_atender*0.6:
-            fp.atender()
-        print(i,fg.enfila,fp.enfila,fg.enfila+fp.enfila)
+            if fg.enfila > 0 and random_atender < int(range_atender*0.35):
+                fg.atender()
+            if fp.enfila > 0 and random_atender < range_atender*0.6:
+                fp.atender()
+            fila_gen.append(fg.enfila)
+            fila_pref.append(fp.enfila)
+            datos = str(i)+'   '+str(fg.enfila)+'   '+str(fp.enfila)+'\n'
+            f.write(datos)
+    f.close()
+#    np.savetxt(i,fg.enfila,fp.enfila,fg.enfila+fp.enfila)
