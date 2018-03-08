@@ -106,4 +106,5 @@ if __name__ == "__main__":
             datos = str(i)+'   '+str(fg.enfila)+'   '+str(fp.enfila)+'\n'
             f.write(datos)
     f.close()
-#    np.savetxt(i,fg.enfila,fp.enfila,fg.enfila+fp.enfila)
+
+
